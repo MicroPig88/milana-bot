@@ -1,28 +1,28 @@
-from flask import Flask, request
-import asyncio
+from fastapi import FastAPI, Request
+import uvicorn
 import os
 from telegram import Update, Bot
 from telegram.ext import Application, MessageHandler, filters
 from bot.main import forward, BOT_TOKEN
 
-flask_app = Flask(__name__)
+app = FastAPI()
+bot = Bot(token=BOT_TOKEN)
 
+# создаём приложение Telegram один раз
 application = Application.builder().token(BOT_TOKEN).build()
 application.add_handler(MessageHandler(filters.ALL, forward))
 
-@flask_app.route("/")
-def home():
-    return "Бот работает!", 200
+@app.get("/")
+async def root():
+    return {"message": "Бот работает!"}
 
-@flask_app.route(f"/webhook/{BOT_TOKEN}", methods=["POST"])
-def webhook():
-    # перехватываем ВСЁ, что может содержать сообщение
-    update = Update.de_json(request.get_json(force=True), Bot(token=BOT_TOKEN))
-    # обрабатываем апдейт через приложение
-    asyncio.create_task(application.process_update(update))
-    return "ok", 200
-
+@app.post(f"/webhook/{BOT_TOKEN}")
+async def webhook(request: Request):
+    data = await request.json()
+    update = Update.de_json(data, bot)
+    # безопасная асинхронная обработка апдейта
+    await application.process_update(update)
+    return {"ok": True}
 
 if __name__ == "__main__":
-    # запускаем Flask
-    flask_app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    uvicorn.run("app:app", host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))

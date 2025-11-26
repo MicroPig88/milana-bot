@@ -18,7 +18,6 @@ async def forward(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if msg is None:
         return
 
-    # --- ТЕКСТ ---
     await context.bot.forward_message(
         chat_id=TARGET_CHAT_ID,
         from_chat_id=msg.chat.id,
