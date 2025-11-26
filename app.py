@@ -1,6 +1,6 @@
 from flask import Flask
 import threading
-from .main import main as start_bot # импортируем твою функцию main
+from bot.main import main as start_bot # импортируем твою функцию main
 
 flask_app = Flask(__name__)
 

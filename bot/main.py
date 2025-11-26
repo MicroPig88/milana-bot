@@ -2,9 +2,12 @@ import os
 
 from telegram import Update
 from telegram.ext import Application, MessageHandler, ContextTypes, filters
+from dotenv import load_dotenv
 
-BOT_TOKEN = os.environ["8569063130:AAG8-QflWqLWmPeDgop0ltodQ_x2HhQkuSQ"] # токен бота от BotFather
-TARGET_CHAT_ID = int(os.environ.get("TARGET_CHAT_ID", "-1003467562734"))# ID чата, куда пересылать сообщения
+load_dotenv()
+
+BOT_TOKEN = os.environ["BOT_TOKEN"] # токен бота от BotFather
+TARGET_CHAT_ID = int(os.environ["TARGET_CHAT_ID"])# ID чата, куда пересылать сообщения
 
 
 async def forward(update: Update, context: ContextTypes.DEFAULT_TYPE):
