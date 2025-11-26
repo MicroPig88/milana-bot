@@ -1,18 +1,28 @@
 from fastapi import FastAPI, Request
 import uvicorn
+from contextlib import asynccontextmanager
 import asyncio
 import os
 from telegram import Update, Bot
 from telegram.ext import Application, MessageHandler, filters
 from bot.main import forward, BOT_TOKEN
 
-app = FastAPI()
+
 bot = Bot(token=BOT_TOKEN)
 
 # создаём приложение Telegram один раз
 application = Application.builder().token(BOT_TOKEN).build()
 application.add_handler(MessageHandler(filters.ALL, forward))
-asyncio.run(application.initialize())
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Код запуска (startup)
+    await application.initialize()
+    yield
+    # Код завершения (shutdown)
+    await application.shutdown()
+
+app = FastAPI(lifespan=lifespan)
 
 @app.get("/")
 async def root():
