@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request
 import uvicorn
+import logging
 from contextlib import asynccontextmanager
 import asyncio
 import os
