@@ -21,6 +21,6 @@ async def forward(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # --- ТЕКСТ ---
     await context.bot.forward_message(
         chat_id=TARGET_CHAT_ID,
-        from_chat_id=update.effective_chat.id,
-        message_id=update.message.message_id
+        from_chat_id=msg.chat.id,
+        message_id=msg.message_id
     )

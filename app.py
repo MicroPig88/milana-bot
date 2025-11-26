@@ -1,7 +1,7 @@
-from flask import Flask
-import threading
+from flask import Flask, request
 import asyncio
 import os
+import request
 from telegram import Update, Bot
 from telegram.ext import Application, MessageHandler
 from bot.main import forward, BOT_TOKEN
@@ -15,12 +15,12 @@ def home():
 
 @flask_app.route(f"/webhook/{BOT_TOKEN}", methods=["POST"])
 def webhook():
-    app = Application.builder().token(BOT_TOKEN).build()
     # перехватываем ВСЁ, что может содержать сообщение
-    app.add_handler(MessageHandler(filters.ALL, forward))
+    application = Application.builder().token(BOT_TOKEN).build()
+    application.add_handler(MessageHandler(filters.ALL, forward))
     update = Update.de_json(request.get_json(force=True), bot)
     # обрабатываем апдейт через приложение
-    asyncio.run(app.update_queue.put(update))
+    asyncio.create_task(application.process_update(update))
     return "ok", 200
 
 
