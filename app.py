@@ -1,9 +1,8 @@
 from fastapi import FastAPI, Request
 import uvicorn
-import logging
 from contextlib import asynccontextmanager
 import asyncio
-import os
+import os, logging
 from telegram import Update, Bot
 from telegram.ext import Application, MessageHandler, filters
 from bot.main import forward, BOT_TOKEN
