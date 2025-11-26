@@ -1,7 +1,7 @@
 import os
 
 from telegram import Update
-from telegram.ext import ContextTypes, filters
+from telegram.ext import ContextTypes
 from dotenv import load_dotenv
 
 load_dotenv()

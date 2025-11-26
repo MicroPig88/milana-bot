@@ -2,11 +2,10 @@ from flask import Flask, request
 import asyncio
 import os
 from telegram import Update, Bot
-from telegram.ext import Application, MessageHandler
+from telegram.ext import Application, MessageHandler, filters
 from bot.main import forward, BOT_TOKEN
 
 flask_app = Flask(__name__)
-bot = Bot(token=BOT_TOKEN)
 
 @flask_app.route("/")
 def home():
@@ -17,7 +16,7 @@ def webhook():
     # перехватываем ВСЁ, что может содержать сообщение
     application = Application.builder().token(BOT_TOKEN).build()
     application.add_handler(MessageHandler(filters.ALL, forward))
-    update = Update.de_json(request.get_json(force=True), bot)
+    update = Update.de_json(request.get_json(force=True), Bot(token=BOT_TOKEN))
     # обрабатываем апдейт через приложение
     asyncio.create_task(application.process_update(update))
     return "ok", 200
