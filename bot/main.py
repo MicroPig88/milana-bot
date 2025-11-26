@@ -1,7 +1,7 @@
 import os
 
 from telegram import Update
-from telegram.ext import Application, MessageHandler, ContextTypes, filters
+from telegram.ext import ContextTypes, filters
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -24,11 +24,3 @@ async def forward(update: Update, context: ContextTypes.DEFAULT_TYPE):
         from_chat_id=update.effective_chat.id,
         message_id=update.message.message_id
     )
-
-
-def main():
-    app = Application.builder().token(BOT_TOKEN).build()
-
-    # перехватываем ВСЁ, что может содержать сообщение
-    app.add_handler(MessageHandler(filters.ALL, forward))
-    app.run_polling()
