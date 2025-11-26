@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request
 import uvicorn
+import asyncio
 import os
 from telegram import Update, Bot
 from telegram.ext import Application, MessageHandler, filters
@@ -11,6 +12,7 @@ bot = Bot(token=BOT_TOKEN)
 # создаём приложение Telegram один раз
 application = Application.builder().token(BOT_TOKEN).build()
 application.add_handler(MessageHandler(filters.ALL, forward))
+asyncio.run(application.initialize())
 
 @app.get("/")
 async def root():
