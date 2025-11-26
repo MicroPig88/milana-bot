@@ -1,28 +1,24 @@
+# app.py
 from fastapi import FastAPI, Request
-import uvicorn
-from contextlib import asynccontextmanager
-import asyncio
-import os, logging
 from telegram import Update, Bot
 from telegram.ext import Application, MessageHandler, filters
 from bot.main import forward, BOT_TOKEN
+from contextlib import asynccontextmanager
+import logging
 
+logging.basicConfig(level=logging.INFO)
 
 bot = Bot(token=BOT_TOKEN)
-
-# создаём приложение Telegram один раз
 application = Application.builder().token(BOT_TOKEN).build()
 application.add_handler(MessageHandler(filters.ALL, forward))
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Код запуска (startup)
-    await application.start()
-    logging.info("Telegram bot started")
+    await application.initialize()
+    logging.info("Application initialized")
     yield
-    # Завершение работы Telegram приложения
-    await application.stop()
-    logging.info("Telegram bot stopped")
+    await application.shutdown()
+    logging.info("Application shutdown")
 
 app = FastAPI(lifespan=lifespan)
 
@@ -33,8 +29,8 @@ async def root():
 @app.post(f"/webhook/{BOT_TOKEN}")
 async def webhook(request: Request):
     data = await request.json()
+    logging.info(f"Incoming update: {data}")
     update = Update.de_json(data, bot)
-    # безопасная асинхронная обработка апдейта
     await application.process_update(update)
     return {"ok": True}
 
