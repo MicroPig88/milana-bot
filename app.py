@@ -1,10 +1,10 @@
-# app.py
+import os, logging
+import uvicorn
 from fastapi import FastAPI, Request
 from telegram import Update, Bot
 from telegram.ext import Application, MessageHandler, filters
-from bot.main import forward, BOT_TOKEN
 from contextlib import asynccontextmanager
-import logging
+from bot.main import forward, BOT_TOKEN
 
 logging.basicConfig(level=logging.INFO)
 
@@ -15,10 +15,10 @@ application.add_handler(MessageHandler(filters.ALL, forward))
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await application.initialize()
-    logging.info("Application initialized")
+    logging.info("Telegram Application initialized")
     yield
     await application.shutdown()
-    logging.info("Application shutdown")
+    logging.info("Telegram Application shutdown")
 
 app = FastAPI(lifespan=lifespan)
 
