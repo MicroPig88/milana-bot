@@ -17,10 +17,12 @@ application.add_handler(MessageHandler(filters.ALL, forward))
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Код запуска (startup)
-    await application.initialize()
+    await application.start()
+    logging.info("Telegram bot started")
     yield
-    # Код завершения (shutdown)
-    await application.shutdown()
+    # Завершение работы Telegram приложения
+    await application.stop()
+    logging.info("Telegram bot stopped")
 
 app = FastAPI(lifespan=lifespan)
 
