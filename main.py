@@ -29,6 +29,3 @@ def main():
     # перехватываем ВСЁ, что может содержать сообщение
     app.add_handler(MessageHandler(filters.ALL, forward))
     app.run_polling()
-
-if __name__ == "__main__":
-    main()
